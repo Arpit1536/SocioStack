@@ -12,6 +12,7 @@ import com.arpit.sociostack.views.screens.*
 import com.arpit.sociostack.vm.MemberViewModel
 import com.arpit.sociostack.vm.AnnouncementViewModel
 import com.arpit.sociostack.vm.RoleViewModel
+import androidx.compose.runtime.collectAsState
 
 @Composable
 fun AppNavGraph(
@@ -127,7 +128,7 @@ fun AppNavGraph(
         ) { backStackEntry ->
             val announcementId = backStackEntry.arguments!!.getString("announcementId")!!
 
-            val announcements = announcementViewModel.announcements.value
+            val announcements = announcementViewModel.announcements.collectAsState().value
             val announcement = announcements.find { it.id == announcementId }
 
             announcement?.let {
