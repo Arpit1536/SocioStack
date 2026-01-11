@@ -77,7 +77,7 @@ com.arpit.sociostack
    git clone https://github.com/Arpit1536/SocioStack.git
 
  
-##Future enhancement
+## Future Enhancement
 
 Firebase / backend integration
 
