@@ -46,17 +46,22 @@ fun MemberManagementScreen(
         Color(0xFF4A148C)
     )
 
-    val uniqueRoles = remember(members) {
-        listOf("All") + members.map { it.role }.distinct().sorted()
-    }
-    val uniqueDomains = remember(members) {
-        listOf("All") + members.map { it.domain }.distinct().sorted()
-    }
+    val roleOptions = listOf("All", "Member", "Lead", "Admin", "Co Lead")
+    val domainOptions = listOf(
+        "All",
+        "App Dev",
+        "Web Dev",
+        "AI/ML",
+        "Marketing",
+        "Content Writing",
+        "Graphic Designing",
+        "Cyber Security"
+    )
 
     val filteredMembers = members
         .filter { it.name.contains(searchQuery, ignoreCase = true) }
-        .filter { selectedRole == "All" || it.role.equals(selectedRole, true) }
-        .filter { selectedDomain == "All" || it.domain.equals(selectedDomain, true) }
+        .filter { selectedRole == "All" || it.role.equals(selectedRole, ignoreCase = true) }
+        .filter { selectedDomain == "All" || it.domain.equals(selectedDomain, ignoreCase = true) }
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -132,9 +137,9 @@ fun MemberManagementScreen(
                 DropdownMenu(
                     expanded = showRoleMenu,
                     onDismissRequest = { showRoleMenu = false },
-                    modifier = Modifier.background(Color(0xFF1F2937))
+                    modifier = Modifier.background(Color(0xFF2D1B69))
                 ) {
-                    uniqueRoles.forEach { role ->
+                    roleOptions.forEach { role ->
                         DropdownMenuItem(
                             text = { Text(role, color = Color.White) },
                             onClick = {
@@ -153,9 +158,9 @@ fun MemberManagementScreen(
                 DropdownMenu(
                     expanded = showDomainMenu,
                     onDismissRequest = { showDomainMenu = false },
-                    modifier = Modifier.background(Color(0xFF1F2937))
+                    modifier = Modifier.background(Color(0xFF2D1B69))
                 ) {
-                    uniqueDomains.forEach { domain ->
+                    domainOptions.forEach { domain ->
                         DropdownMenuItem(
                             text = { Text(domain, color = Color.White) },
                             onClick = {
@@ -446,7 +451,6 @@ fun MemberCardGlassManagement(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Avatar
             Box(
                 modifier = Modifier
                     .size(56.dp)

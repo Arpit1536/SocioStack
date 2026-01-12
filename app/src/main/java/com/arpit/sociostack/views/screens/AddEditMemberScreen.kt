@@ -2,6 +2,7 @@ package com.arpit.sociostack.views.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -42,6 +44,19 @@ fun AddEditMemberScreen(
     var role by remember { mutableStateOf("") }
     var domain by remember { mutableStateOf("") }
     var contact by remember { mutableStateOf("") }
+    var showRoleMenu by remember { mutableStateOf(false) }
+    var showDomainMenu by remember { mutableStateOf(false) }
+
+    val roleOptions = listOf("Member", "Lead", "Admin", "Co Lead")
+    val domainOptions = listOf(
+        "App Dev",
+        "Web Dev",
+        "AI/ML",
+        "Marketing",
+        "Content Writing",
+        "Graphic Designing",
+        "Cyber Security"
+    )
 
     LaunchedEffect(existingMember) {
         existingMember?.let {
@@ -143,21 +158,157 @@ fun AddEditMemberScreen(
                             placeholder = "Enter member's name"
                         )
 
-                        GlassTextField(
-                            value = role,
-                            onValueChange = { role = it },
-                            label = "Role",
-                            icon = Icons.Default.Badge,
-                            placeholder = "e.g., President, Treasurer"
-                        )
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Badge,
+                                    contentDescription = null,
+                                    tint = Color(0xFF6366F1),
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Text(
+                                    text = "Role",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color.White.copy(alpha = 0.9f)
+                                )
+                            }
 
-                        GlassTextField(
-                            value = domain,
-                            onValueChange = { domain = it },
-                            label = "Domain",
-                            icon = Icons.Default.Category,
-                            placeholder = "e.g., Technical, Management"
-                        )
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(14.dp))
+                                    .clickable { showRoleMenu = true },
+                                shape = RoundedCornerShape(14.dp),
+                                color = Color.White.copy(alpha = 0.08f),
+                                border = androidx.compose.foundation.BorderStroke(
+                                    1.dp,
+                                    Color.White.copy(alpha = 0.15f)
+                                )
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = role.ifEmpty { "Select role" },
+                                        color = if (role.isEmpty())
+                                            Color.White.copy(alpha = 0.4f)
+                                        else
+                                            Color.White,
+                                        fontSize = 16.sp
+                                    )
+                                    Icon(
+                                        imageVector = Icons.Default.KeyboardArrowDown,
+                                        contentDescription = null,
+                                        tint = Color.White.copy(alpha = 0.6f)
+                                    )
+                                }
+                            }
+
+                            DropdownMenu(
+                                expanded = showRoleMenu,
+                                onDismissRequest = { showRoleMenu = false },
+                                modifier = Modifier.background(Color(0xFF2D1B69))
+                            ) {
+                                roleOptions.forEach { option ->
+                                    DropdownMenuItem(
+                                        text = { Text(option, color = Color.White) },
+                                        onClick = {
+                                            role = option
+                                            showRoleMenu = false
+                                        },
+                                        modifier = Modifier.background(
+                                            if (role == option)
+                                                Color(0xFF6366F1).copy(alpha = 0.3f)
+                                            else Color.Transparent
+                                        )
+                                    )
+                                }
+                            }
+                        }
+
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Category,
+                                    contentDescription = null,
+                                    tint = Color(0xFF6366F1),
+                                    modifier = Modifier.size(18.dp)
+                                )
+                                Text(
+                                    text = "Domain",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color.White.copy(alpha = 0.9f)
+                                )
+                            }
+
+                            Surface(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(14.dp))
+                                    .clickable { showDomainMenu = true },
+                                shape = RoundedCornerShape(14.dp),
+                                color = Color.White.copy(alpha = 0.08f),
+                                border = androidx.compose.foundation.BorderStroke(
+                                    1.dp,
+                                    Color.White.copy(alpha = 0.15f)
+                                )
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = domain.ifEmpty { "Select domain" },
+                                        color = if (domain.isEmpty())
+                                            Color.White.copy(alpha = 0.4f)
+                                        else
+                                            Color.White,
+                                        fontSize = 16.sp
+                                    )
+                                    Icon(
+                                        imageVector = Icons.Default.KeyboardArrowDown,
+                                        contentDescription = null,
+                                        tint = Color.White.copy(alpha = 0.6f)
+                                    )
+                                }
+                            }
+
+                            DropdownMenu(
+                                expanded = showDomainMenu,
+                                onDismissRequest = { showDomainMenu = false },
+                                modifier = Modifier.background(Color(0xFF2D1B69))
+                            ) {
+                                domainOptions.forEach { option ->
+                                    DropdownMenuItem(
+                                        text = { Text(option, color = Color.White) },
+                                        onClick = {
+                                            domain = option
+                                            showDomainMenu = false
+                                        },
+                                        modifier = Modifier.background(
+                                            if (domain == option)
+                                                Color(0xFF6366F1).copy(alpha = 0.3f)
+                                            else Color.Transparent
+                                        )
+                                    )
+                                }
+                            }
+                        }
 
                         GlassTextField(
                             value = contact,
