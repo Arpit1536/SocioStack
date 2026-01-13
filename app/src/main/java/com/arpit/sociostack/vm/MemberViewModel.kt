@@ -14,8 +14,8 @@ class MemberViewModel : ViewModel() {
     private val _members = MutableStateFlow<List<Member>>(emptyList())
     val members: StateFlow<List<Member>> = _members
 
-
     private val _deleteState = MutableStateFlow<UiState>(UiState.Idle)
+    val deleteState: StateFlow<UiState> = _deleteState
 
     init {
         fetchMembers()
@@ -34,7 +34,8 @@ class MemberViewModel : ViewModel() {
         name: String,
         role: String,
         domain: String,
-        contact: String?
+        contact: String?,
+        profileImageUrl: String? = null
     ) {
         if (name.isBlank() || role.isBlank() || domain.isBlank() || contact?.isBlank() == true) {
             _addMemberState.value = UiState.Error("All fields are required")
@@ -47,7 +48,8 @@ class MemberViewModel : ViewModel() {
             name = name,
             role = role,
             domain = domain,
-            contact = contact
+            contact = contact,
+            profileImageUrl = profileImageUrl
         )
 
         repository.addMember(
@@ -102,5 +104,7 @@ class MemberViewModel : ViewModel() {
         )
     }
 
-
+    fun resetDeleteState() {
+        _deleteState.value = UiState.Idle
+    }
 }

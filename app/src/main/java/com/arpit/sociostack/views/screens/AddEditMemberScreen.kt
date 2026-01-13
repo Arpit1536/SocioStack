@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
@@ -18,10 +19,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.arpit.sociostack.state.UiState
 import com.arpit.sociostack.vm.MemberViewModel
 
@@ -44,6 +47,7 @@ fun AddEditMemberScreen(
     var role by remember { mutableStateOf("") }
     var domain by remember { mutableStateOf("") }
     var contact by remember { mutableStateOf("") }
+    var profileImageUrl by remember { mutableStateOf("") }
     var showRoleMenu by remember { mutableStateOf(false) }
     var showDomainMenu by remember { mutableStateOf(false) }
 
@@ -64,6 +68,7 @@ fun AddEditMemberScreen(
             role = it.role
             domain = it.domain
             contact = it.contact ?: ""
+            profileImageUrl = it.profileImageUrl ?: ""
         }
     }
 
@@ -131,12 +136,11 @@ fun AddEditMemberScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                if (isEditMode) {
-                    ProfilePreviewCard(
-                        name = name.ifEmpty { existingMember?.name ?: "" },
-                        role = role.ifEmpty { existingMember?.role ?: "" }
-                    )
-                }
+                ProfilePreviewCardWithImage(
+                    name = name.ifEmpty { if (isEditMode) existingMember?.name ?: "" else "New Member" },
+                    role = role.ifEmpty { if (isEditMode) existingMember?.role ?: "" else "Role" },
+                    profileImageUrl = profileImageUrl
+                )
 
                 GlassFormCard {
                     Column(
@@ -148,6 +152,14 @@ fun AddEditMemberScreen(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White
+                        )
+
+                        GlassTextField(
+                            value = profileImageUrl,
+                            onValueChange = { profileImageUrl = it },
+                            label = "Profile Image URL (Optional)",
+                            icon = Icons.Default.Image,
+                            placeholder = "https://example.com/image.jpg"
                         )
 
                         GlassTextField(
@@ -329,7 +341,8 @@ fun AddEditMemberScreen(
                                     name = name,
                                     role = role,
                                     domain = domain,
-                                    contact = contact
+                                    contact = contact,
+                                    profileImageUrl = profileImageUrl.ifEmpty { null }
                                 )
                             )
                             Toast.makeText(
@@ -339,7 +352,7 @@ fun AddEditMemberScreen(
                             ).show()
                             onBack()
                         } else {
-                            viewModel.addMember(name, role, domain, contact)
+                            viewModel.addMember(name, role, domain, contact, profileImageUrl.ifEmpty { null })
                         }
                     },
                     enabled = name.isNotEmpty() && role.isNotEmpty() && domain.isNotEmpty() && (!isEditMode || state !is UiState.Loading),
@@ -419,7 +432,11 @@ fun AddEditMemberScreen(
 }
 
 @Composable
-fun ProfilePreviewCard(name: String, role: String) {
+fun ProfilePreviewCardWithImage(
+    name: String,
+    role: String,
+    profileImageUrl: String
+) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -446,34 +463,43 @@ fun ProfilePreviewCard(name: String, role: String) {
             Box(
                 modifier = Modifier
                     .size(56.dp)
+                    .clip(CircleShape)
                     .background(
                         Brush.linearGradient(
                             listOf(
                                 Color(0xFF6366F1),
                                 Color(0xFF8B5CF6)
                             )
-                        ),
-                        RoundedCornerShape(16.dp)
+                        )
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = name.firstOrNull()?.uppercase() ?: "?",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
+                if (profileImageUrl.isNotEmpty()) {
+                    AsyncImage(
+                        model = profileImageUrl,
+                        contentDescription = "Profile",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Text(
+                        text = name.firstOrNull()?.uppercase() ?: "?",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
             }
 
             Column {
                 Text(
-                    text = name.ifEmpty { "New Member" },
+                    text = name,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
                 Text(
-                    text = role.ifEmpty { "Role" },
+                    text = role,
                     fontSize = 14.sp,
                     color = Color.White.copy(alpha = 0.6f)
                 )

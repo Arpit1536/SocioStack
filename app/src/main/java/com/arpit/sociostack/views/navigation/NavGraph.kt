@@ -206,6 +206,9 @@ fun AppNavGraph(
                         Screen.AddMember.createRoute(it)
                     )
                 },
+                onDeleteConfirmed = {
+                    navController.popBackStack()
+                },
                 onBack = {
                     navController.popBackStack()
                 }

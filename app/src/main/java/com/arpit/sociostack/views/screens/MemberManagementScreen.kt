@@ -18,10 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.arpit.sociostack.data.model.Member
 import com.arpit.sociostack.vm.MemberViewModel
 
@@ -465,12 +467,21 @@ fun MemberCardGlassManagement(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = member.name.firstOrNull()?.uppercase() ?: "?",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
+                if (!member.profileImageUrl.isNullOrEmpty()) {
+                    AsyncImage(
+                        model = member.profileImageUrl,
+                        contentDescription = "Profile",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Text(
+                        text = member.name.firstOrNull()?.uppercase() ?: "?",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
             }
 
             Column(modifier = Modifier.weight(1f)) {
