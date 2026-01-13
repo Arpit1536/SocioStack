@@ -23,18 +23,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.arpit.sociostack.vm.RoleViewModel
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.arpit.sociostack.R
 
 @Composable
 fun RoleSelectionScreen(
     roleViewModel: RoleViewModel = viewModel()
 ) {
-
     val gradientColors = listOf(
         Color(0xFF1A0B2E),
         Color(0xFF2D1B69),
         Color(0xFF4A148C)
     )
-
 
     var isVisible by remember { mutableStateOf(false) }
 
@@ -64,7 +65,6 @@ fun RoleSelectionScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Logo/Icon Area
             Surface(
                 modifier = Modifier.size(100.dp),
                 shape = RoundedCornerShape(28.dp),
@@ -87,18 +87,16 @@ fun RoleSelectionScreen(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.AdminPanelSettings,
+                    Image(
+                        painter = painterResource(id = R.drawable.logo),
                         contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(50.dp)
+                        modifier = Modifier.size(60.dp)
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Title
             Text(
                 text = "Welcome to",
                 fontSize = 16.sp,
@@ -126,7 +124,6 @@ fun RoleSelectionScreen(
 
             Spacer(modifier = Modifier.height(48.dp))
 
-
             RoleCard(
                 icon = Icons.Default.AdminPanelSettings,
                 title = "Admin",
@@ -140,7 +137,6 @@ fun RoleSelectionScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-
             RoleCard(
                 icon = Icons.Default.Person,
                 title = "Member",
@@ -153,7 +149,6 @@ fun RoleSelectionScreen(
             )
 
             Spacer(modifier = Modifier.height(32.dp))
-
 
             Text(
                 text = "Choose wisely • You can always switch later",
@@ -238,7 +233,6 @@ fun RoleCard(
                     }
                 }
 
-
                 Column(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(6.dp)
@@ -257,7 +251,6 @@ fun RoleCard(
                     )
                 }
 
-
                 Icon(
                     imageVector = Icons.Default.AdminPanelSettings,
                     contentDescription = null,
@@ -267,7 +260,6 @@ fun RoleCard(
             }
         }
     }
-
 
     LaunchedEffect(isPressed) {
         if (isPressed) {

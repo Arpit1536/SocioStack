@@ -17,16 +17,20 @@ class AnnouncementRepository {
         onSuccess: () -> Unit,
         onError: (Exception) -> Unit
     ) {
-        val announcement = Announcement(
-            title = title,
-            message = message,
-            priority = priority,
-            timestamp = Timestamp.now()
+        val announcement = hashMapOf(
+            "title" to title,
+            "message" to message,
+            "priority" to priority,
+            "timestamp" to Timestamp.now()
         )
 
         announcementsRef
             .add(announcement)
-            .addOnSuccessListener { onSuccess() }
+            .addOnSuccessListener { documentReference ->
+                documentReference.update("id", documentReference.id)
+                    .addOnSuccessListener { onSuccess() }
+                    .addOnFailureListener { onError(it) }
+            }
             .addOnFailureListener { onError(it) }
     }
 
@@ -48,8 +52,10 @@ class AnnouncementRepository {
                     return@addSnapshotListener
                 }
 
-                val list = snapshot.documents.mapNotNull {
-                    it.toObject(Announcement::class.java)
+                val list = snapshot.documents.mapNotNull { document ->
+                    document.toObject(Announcement::class.java)?.copy(
+                        id = document.id
+                    )
                 }
 
                 onResult(list)

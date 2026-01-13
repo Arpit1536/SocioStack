@@ -1,7 +1,5 @@
 package com.arpit.sociostack.views.components
 
-import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,11 +18,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.arpit.sociostack.R
 import com.arpit.sociostack.data.model.Announcement
 import com.arpit.sociostack.data.model.Member
 
@@ -37,7 +33,8 @@ fun AdminHomeContent(
     onAddMemberClick: () -> Unit,
     onPostAnnouncementClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    onAboutClick: () -> Unit
+    onAboutClick: () -> Unit,
+    onAnnouncementClick: (Announcement) -> Unit
 ) {
     val gradientColors = listOf(
         Color(0xFF1A0B2E),
@@ -103,10 +100,7 @@ fun AdminHomeContent(
                     modifier = Modifier.weight(1f),
                     icon = Icons.Default.Announcement,
                     text = "Post",
-                    onClick = {
-                        Log.d("NAV_TEST", "Post Announcement button clicked")
-                        onPostAnnouncementClick()
-                    }
+                    onClick = onPostAnnouncementClick
                 )
             }
 
@@ -163,7 +157,8 @@ fun AdminHomeContent(
                             title = announcement.title,
                             description = announcement.message,
                             time = announcement.timestamp?.toDate().toString(),
-                            priority = announcement.priority
+                            priority = announcement.priority,
+                            onClick = { onAnnouncementClick(announcement) }
                         )
                     }
                 }
@@ -300,7 +295,6 @@ fun MemberCardGlass(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Profile Picture
             Box(
                 modifier = Modifier
                     .size(60.dp)
@@ -348,10 +342,13 @@ fun AnnouncementCardGlass(
     title: String,
     description: String,
     time: String,
-    priority: String = "Medium"
+    priority: String = "Medium",
+    onClick: () -> Unit
 ) {
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(20.dp),
         color = Color.White.copy(alpha = 0.1f),
         border = androidx.compose.foundation.BorderStroke(
@@ -414,7 +411,6 @@ fun AnnouncementCardGlass(
                         modifier = Modifier.weight(1f)
                     )
 
-                    // Priority Badge
                     Surface(
                         shape = RoundedCornerShape(8.dp),
                         color = when (priority.lowercase()) {

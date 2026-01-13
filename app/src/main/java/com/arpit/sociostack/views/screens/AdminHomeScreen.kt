@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.arpit.sociostack.data.model.Announcement
 import com.arpit.sociostack.views.components.AdminHomeContent
 import com.arpit.sociostack.vm.AnnouncementViewModel
 import com.arpit.sociostack.vm.MemberViewModel
@@ -18,6 +19,7 @@ fun AdminHomeScreen(
     onPostAnnouncementClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onAboutClick: () -> Unit,
+    onAnnouncementClick: (Announcement) -> Unit
 ) {
     val members by memberViewModel.members.collectAsState()
     val announcements by announcementViewModel.announcements.collectAsState()
@@ -29,8 +31,8 @@ fun AdminHomeScreen(
         onAnnouncementsClick = onAnnouncementsClick,
         onAddMemberClick = onAddMemberClick,
         onPostAnnouncementClick = onPostAnnouncementClick,
-          onSettingsClick = onSettingsClick,
-        onAboutClick = onAboutClick   ,
-
+        onSettingsClick = onSettingsClick,
+        onAboutClick = onAboutClick,
+        onAnnouncementClick = onAnnouncementClick
     )
 }

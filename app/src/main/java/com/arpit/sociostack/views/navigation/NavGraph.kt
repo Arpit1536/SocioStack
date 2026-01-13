@@ -2,6 +2,7 @@ package com.arpit.sociostack.views.navigation
 
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -12,7 +13,6 @@ import com.arpit.sociostack.views.screens.*
 import com.arpit.sociostack.vm.MemberViewModel
 import com.arpit.sociostack.vm.AnnouncementViewModel
 import com.arpit.sociostack.vm.RoleViewModel
-import androidx.compose.runtime.collectAsState
 
 @Composable
 fun AppNavGraph(
@@ -53,6 +53,11 @@ fun AppNavGraph(
                 },
                 onAboutClick = {
                     navController.navigate(Screen.About.route)
+                },
+                onAnnouncementClick = { announcement ->
+                    navController.navigate(
+                        Screen.AnnouncementDetail.createRoute(announcement.id)
+                    )
                 }
             )
         }
@@ -127,7 +132,6 @@ fun AppNavGraph(
             )
         ) { backStackEntry ->
             val announcementId = backStackEntry.arguments!!.getString("announcementId")!!
-
             val announcements = announcementViewModel.announcements.collectAsState().value
             val announcement = announcements.find { it.id == announcementId }
 
@@ -150,7 +154,7 @@ fun AppNavGraph(
                 onAboutClick = {
                     navController.navigate(Screen.About.route)
                 },
-                roleViewModel = roleViewModel  // FIX: Use the RoleViewModel created at top level
+                roleViewModel = roleViewModel
             )
         }
 

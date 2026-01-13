@@ -11,19 +11,18 @@ class AnnouncementViewModel : ViewModel() {
 
     private val repository = AnnouncementRepository()
 
-
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
     val uiState: StateFlow<UiState> = _uiState
 
-    private val _announcements =
-        MutableStateFlow<List<Announcement>>(emptyList())
+    private val _announcements = MutableStateFlow<List<Announcement>>(emptyList())
     val announcements: StateFlow<List<Announcement>> = _announcements
 
-    init {
+    private val _postState = MutableStateFlow<UiState>(UiState.Idle)
+    val postState: StateFlow<UiState> = _postState
 
+    init {
         fetchAnnouncements()
     }
-
 
     fun fetchAnnouncements() {
         _uiState.value = UiState.Loading
@@ -34,17 +33,10 @@ class AnnouncementViewModel : ViewModel() {
                 _uiState.value = UiState.Success
             },
             onError = { e ->
-                _uiState.value =
-                    UiState.Error(e.message ?: "Failed to load announcements")
+                _uiState.value = UiState.Error(e.message ?: "Failed to load announcements")
             }
         )
     }
-
-
-
-
-    private val _postState = MutableStateFlow<UiState>(UiState.Idle)
-    val postState: StateFlow<UiState> = _postState
 
     fun postAnnouncement(title: String, message: String, priority: String) {
         if (title.isBlank() || message.isBlank()) {
@@ -62,15 +54,12 @@ class AnnouncementViewModel : ViewModel() {
                 _postState.value = UiState.Success
             },
             onError = { e ->
-                _postState.value = UiState.Error(
-                    e.message ?: "Something went wrong"
-                )
+                _postState.value = UiState.Error(e.message ?: "Something went wrong")
             }
         )
     }
 
-
     fun resetState() {
-        _uiState.value = UiState.Idle
+        _postState.value = UiState.Idle
     }
 }
